@@ -1,110 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎉 Happy New Year 🎉</title>
-  <link rel="stylesheet" href="style.css">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Pacifico&display=swap" rel="stylesheet">
 
   <style>
+    /* --- Base & Background --- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
       margin: 0;
-      font-family: 'Montserrat', sans-serif;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: white;
-      height: 100vh;
+      color: #fff;
+      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
 
+    /* --- Heading --- */
     .feliz {
       font-family: 'Pacifico', cursive;
-      font-size: 64px;
+      font-size: clamp(36px, 6vw, 68px);
       color: #ffeb3b;
       text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
-      margin-bottom: 40px;
+      margin: 0 16px 24px;
+      text-align: center;
     }
 
-    .ano_novo {
+    /* --- Year Stage --- */
+    .stage {
       position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      width: min(680px, 92vw);
+      height: clamp(120px, 18vw, 180px);
       overflow: hidden;
-      height: 180px;
-      width: 100%;
+      display: grid;
+      place-items: center;
     }
 
+    /* Two layers that we swap/animate */
     .year {
-      font-size: 120px;
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: clamp(64px, 16vw, 140px);
       font-weight: 700;
       color: #ff9800;
       text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-      position: absolute;
       opacity: 0;
+      transform: translateX(0);
+      will-change: transform, opacity;
     }
+    .year.visible { opacity: 1; }
 
-    .year.active {
-      opacity: 1;
-      position: relative;
-    }
+    /* --- Animations --- */
+    .slide-out-left { animation: slideOutLeft 800ms ease forwards; }
+    .slide-in-right { animation: slideInRight 800ms ease forwards; }
+    .pop-highlight  { animation: pop 600ms ease-in-out forwards; }
 
-    /* Slide out to the left */
-    .slide-out-left {
-      animation: slideOutLeft 0.8s forwards;
-    }
     @keyframes slideOutLeft {
-      0%   { transform: translateX(0); opacity: 1; }
-      100% { transform: translateX(-200px); opacity: 0; }
-    }
-
-    /* Slide in from the right */
-    .slide-in-right {
-      animation: slideInRight 0.8s forwards;
+      0%   { transform: translateX(0);     opacity: 1; }
+      100% { transform: translateX(-220px); opacity: 0; }
     }
     @keyframes slideInRight {
-      0%   { transform: translateX(200px); opacity: 0; }
-      100% { transform: translateX(0); opacity: 1; }
+      0%   { transform: translateX(220px);  opacity: 0; }
+      100% { transform: translateX(0);      opacity: 1; }
+    }
+    @keyframes pop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.08) rotate(1deg); }
+      100% { transform: scale(1); }
     }
 
-    /* Fireworks burst animation */
-    .firework-burst {
-      animation: burst 1s ease forwards;
+    /* --- Simple fireworks (burst the containers) --- */
+    .fogos { position: absolute; inset: 0; pointer-events: none; }
+    .fogos > div {
+      position: absolute; width: 12px; height: 12px; border-radius: 50%;
+      background: radial-gradient(circle, #ffeb3b 0%, #ffa000 45%, transparent 60%);
+      opacity: 0; transform: scale(0);
     }
-    @keyframes burst {
-      0% { transform: scale(0); opacity: 0; }
-      50% { transform: scale(1.5); opacity: 1; }
-      100% { transform: scale(0); opacity: 0; }
+    /* positions */
+    .f1 { left: 18%; top: 42%; }
+    .f2 { left: 14%; top: 72%; }
+    .f3 { right: 20%; top: 40%; }
+    .f4 { right: 12%; top: 70%; }
+    .firework-burst { animation: fw 1000ms ease-out forwards; }
+    @keyframes fw {
+      0%   { transform: scale(0);   opacity: 0; filter: blur(0px); }
+      40%  { transform: scale(1.8); opacity: 1; filter: blur(0px); }
+      100% { transform: scale(0.2); opacity: 0; filter: blur(1px); }
     }
 
+    /* --- Footer --- */
     footer.n {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      text-align: center;
-      padding: 15px;
-      background: rgba(0,0,0,0.4);
+      position: absolute; bottom: 0; left: 0; right: 0;
+      text-align: center; padding: 14px 10px;
+      background: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+
+    /* Respect users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .slide-out-left, .slide-in-right, .pop-highlight, .firework-burst {
+        animation-duration: 1ms !important;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="feliz">🎉 Happy New Year 🎉</div>
+  <h1 class="feliz">🎉 Happy New Year 🎉</h1>
 
-  <div class="ano_novo">
-    <div id="year-old" class="year active"></div>
-    <div id="year-new" class="year"></div>
+  <!-- Year stage -->
+  <div class="stage">
+    <div id="yearA" class="year visible"></div>
+    <div id="yearB" class="year"></div>
   </div>
 
   <!-- Fireworks -->
   <div class="fogos">
-    <div class="f1"><span><i></i></span><span><i></i></span><span><i></i></span></div>
-    <div class="f2"><span><i></i></span><span><i></i></span><span><i></i></span></div>
-    <div class="f3"><span><i></i></span><span><i></i></span><span><i></i></span></div>
-    <div class="f4"><span><i></i></span><span><i></i></span><span><i></i></span></div>
+    <div class="f1"></div>
+    <div class="f2"></div>
+    <div class="f3"></div>
+    <div class="f4"></div>
   </div>
 
   <footer class="n">
@@ -112,60 +134,94 @@
   </footer>
 
   <script>
-    const yearOld = document.getElementById('year-old');
-    const yearNew = document.getElementById('year-new');
+    // Elements
+    const layerA = document.getElementById('yearA');
+    const layerB = document.getElementById('yearB');
+    const bursts = Array.from(document.querySelectorAll('.fogos > div'));
 
+    // State
+    let shownYear = new Date().getFullYear();
+    let isAnimating = false;
+    let current = layerA;   // currently visible layer
+    let next    = layerB;   // offscreen layer to animate in
+
+    // Init content
+    current.textContent = String(shownYear);
+    next.textContent = String(shownYear);
+
+    // Fireworks
     function triggerFireworks() {
-      document.querySelectorAll('.fogos div').forEach(f => {
-        f.classList.add('firework-burst');
-        setTimeout(() => f.classList.remove('firework-burst'), 1500);
+      bursts.forEach((b, i) => {
+        // stagger a little
+        setTimeout(() => {
+          b.classList.add('firework-burst');
+          setTimeout(() => b.classList.remove('firework-burst'), 1100);
+        }, i * 120);
       });
     }
 
-    function setYear(year) {
-      yearOld.textContent = year;
-      yearNew.textContent = year;
+    // Swap layers after animation
+    function finalizeSwap(newYear) {
+      // Make 'next' the visible one
+      current.className = 'year';              // reset
+      next.className = 'year visible';         // now visible
+      current.textContent = String(newYear);   // keep both in sync
+
+      // swap refs
+      const tmp = current; current = next; next = tmp;
+
+      isAnimating = false;
     }
 
+    // Animate full year change: current slides left out, next slides in right.
     function animateYearChange(newYear) {
-      yearNew.textContent = newYear;
+      if (isAnimating) return;
+      isAnimating = true;
 
-      // Animate old year out
-      yearOld.classList.add('slide-out-left');
+      // Prepare next layer with new text and ensure it starts clean.
+      next.textContent = String(newYear);
+      next.className = 'year'; // reset any previous classes
 
-      yearOld.addEventListener('animationend', () => {
-        yearOld.classList.remove('active', 'slide-out-left');
-        yearNew.classList.add('active', 'slide-in-right');
+      // Kick off animations (order matters, but keyframes are absolute)
+      current.classList.add('slide-out-left');
+      next.classList.add('slide-in-right');
 
+      // Pop highlight & fireworks when new year lands
+      next.addEventListener('animationend', onInEnd, { once: true });
+      function onInEnd(e) {
+        // ensure it's the slide-in animation end
+        next.classList.remove('slide-in-right');
+        next.classList.add('pop-highlight');
         triggerFireworks();
 
-        // Swap roles
+        // small delay to let pop run before finalizing
         setTimeout(() => {
-          yearOld.textContent = newYear;
-          yearOld.className = 'year active';
-          yearNew.className = 'year';
-        }, 900);
-      }, { once: true });
+          next.classList.remove('pop-highlight');
+          finalizeSwap(newYear);
+        }, 200);
+      }
+
+      // Clean current when its animation ends
+      current.addEventListener('animationend', function onOutEnd() {
+        current.classList.remove('slide-out-left');
+        current.removeEventListener('animationend', onOutEnd);
+      });
     }
 
-    // Initial setup
-    let currentYear = new Date().getFullYear();
-    setYear(currentYear);
-
-    // Check every second
+    // Poll for year change (does NOT need exact 00:00:00)
     setInterval(() => {
-      const now = new Date();
-      const newYear = now.getFullYear();
-      if (newYear !== currentYear) {
-        animateYearChange(newYear);
-        currentYear = newYear;
+      const y = new Date().getFullYear();
+      if (y !== shownYear && !isAnimating) {
+        animateYearChange(y);
+        shownYear = y;
       }
     }, 1000);
 
-    // Quick test (use in console): demoFlip(2025)
-    window.demoFlip = function(fakeYear) {
-      animateYearChange(fakeYear);
-      currentYear = fakeYear;
+    // Expose a tester for you in DevTools console:
+    window.demoFlip = function(toYear) {
+      const target = Number(toYear) || (shownYear + 1);
+      animateYearChange(target);
+      shownYear = target;
     };
   </script>
 </body>
