@@ -1,109 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎉 Happy New Year 🎉</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .highlight {
-            color: gold;
-            font-weight: bold;
-            animation: pop 0.6s ease-in-out;
-        }
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.5) rotate(10deg); }
-            100% { transform: scale(1); }
-        }
-        .firework-burst {
-            animation: burst 1s ease forwards;
-        }
-        @keyframes burst {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.5); opacity: 1; }
-            100% { transform: scale(0); opacity: 0; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎉 Happy New Year 🎉</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .feliz {
+      font-family: 'Pacifico', cursive;
+      font-size: 64px;
+      color: #ffeb3b;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+      margin-bottom: 40px;
+    }
+
+    .ano_novo {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      height: 180px;
+      width: 100%;
+    }
+
+    .year {
+      font-size: 120px;
+      font-weight: 700;
+      color: #ff9800;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+      position: absolute;
+      opacity: 0;
+    }
+
+    .year.active {
+      opacity: 1;
+      position: relative;
+    }
+
+    /* Slide out to the left */
+    .slide-out-left {
+      animation: slideOutLeft 0.8s forwards;
+    }
+    @keyframes slideOutLeft {
+      0%   { transform: translateX(0); opacity: 1; }
+      100% { transform: translateX(-200px); opacity: 0; }
+    }
+
+    /* Slide in from the right */
+    .slide-in-right {
+      animation: slideInRight 0.8s forwards;
+    }
+    @keyframes slideInRight {
+      0%   { transform: translateX(200px); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Fireworks burst animation */
+    .firework-burst {
+      animation: burst 1s ease forwards;
+    }
+    @keyframes burst {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.5); opacity: 1; }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    footer.n {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      padding: 15px;
+      background: rgba(0,0,0,0.4);
+    }
+  </style>
 </head>
 <body>
-    <div class="feliz">🎉 Happy New Year 🎉</div>
-    
-    <div class="ano_novo">
-        <span id="year-1"></span>
-        <span id="year-2"></span>
-        <span id="year-3"></span>
-        <span id="old-last"></span>
-        <span id="new-last" style="position:absolute; right:0; opacity:0;"></span>
-        <div class="balao"></div>
-    </div>
-    
-    <div class="fogos">
-        <div class="f1"><span><i></i></span><span><i></i></span><span><i></i></span></div>
-        <div class="f2"><span><i></i></span><span><i></i></span><span><i></i></span></div>
-        <div class="f3"><span><i></i></span><span><i></i></span><span><i></i></span></div>
-        <div class="f4"><span><i></i></span><span><i></i></span><span><i></i></span></div>
-    </div>
+  <div class="feliz">🎉 Happy New Year 🎉</div>
 
-    <footer class="n">
-        <h3>Made with ❤️ by Hritik Mondal</h3>
-    </footer>
+  <div class="ano_novo">
+    <div id="year-old" class="year active"></div>
+    <div id="year-new" class="year"></div>
+  </div>
 
-    <script>
-        function setYearDigits(year, oldYear = false) {
-            const y = year.toString();
-            document.getElementById('year-1').textContent = y[0];
-            document.getElementById('year-2').textContent = y[1];
-            document.getElementById('year-3').textContent = y[2];
-            if (oldYear) {
-                document.getElementById('old-last').textContent = y[3];
-            } else {
-                document.getElementById('new-last').textContent = y[3];
-            }
-        }
+  <!-- Fireworks -->
+  <div class="fogos">
+    <div class="f1"><span><i></i></span><span><i></i></span><span><i></i></span></div>
+    <div class="f2"><span><i></i></span><span><i></i></span><span><i></i></span></div>
+    <div class="f3"><span><i></i></span><span><i></i></span><span><i></i></span></div>
+    <div class="f4"><span><i></i></span><span><i></i></span><span><i></i></span></div>
+  </div>
 
-        function triggerFireworks() {
-            document.querySelectorAll('.fogos div').forEach(f => {
-                f.classList.add('firework-burst');
-                setTimeout(() => f.classList.remove('firework-burst'), 1500);
-            });
-        }
+  <footer class="n">
+    <h3>Made with ❤️ by Hritik Mondal</h3>
+  </footer>
 
-        function changeYearAnimation(newYear) {
-            const newLast = document.getElementById('new-last');
-            const oldLast = document.getElementById('old-last');
+  <script>
+    const yearOld = document.getElementById('year-old');
+    const yearNew = document.getElementById('year-new');
 
-            // Animate old digit up
-            oldLast.style.transition = "transform 1s ease, opacity 1s ease";
-            oldLast.style.transform = "translateY(-100px)";
-            oldLast.style.opacity = "0";
+    function triggerFireworks() {
+      document.querySelectorAll('.fogos div').forEach(f => {
+        f.classList.add('firework-burst');
+        setTimeout(() => f.classList.remove('firework-burst'), 1500);
+      });
+    }
 
-            // Animate new digit in
-            setTimeout(() => {
-                setYearDigits(newYear);
-                newLast.style.opacity = "1";
-                newLast.classList.add('highlight');
-                triggerFireworks();
-                setTimeout(() => newLast.classList.remove('highlight'), 2000);
-            }, 1000);
-        }
+    function setYear(year) {
+      yearOld.textContent = year;
+      yearNew.textContent = year;
+    }
 
-        // Initial setup: show old year fully
-        const now = new Date();
-        let currentYear = now.getFullYear();
-        let previousYear = currentYear - 1;
-        setYearDigits(previousYear, true);
-        document.getElementById('new-last').textContent = String(currentYear).slice(-1);
+    function animateYearChange(newYear) {
+      yearNew.textContent = newYear;
 
-        // Auto trigger at midnight
-        setInterval(() => {
-            const t = new Date();
-            if (t.getFullYear() > currentYear) {
-                currentYear = t.getFullYear();
-                changeYearAnimation(currentYear);
-            }
-        }, 1000);
-    </script>
+      // Animate old year out
+      yearOld.classList.add('slide-out-left');
+
+      yearOld.addEventListener('animationend', () => {
+        yearOld.classList.remove('active', 'slide-out-left');
+        yearNew.classList.add('active', 'slide-in-right');
+
+        triggerFireworks();
+
+        // Swap roles
+        setTimeout(() => {
+          yearOld.textContent = newYear;
+          yearOld.className = 'year active';
+          yearNew.className = 'year';
+        }, 900);
+      }, { once: true });
+    }
+
+    // Initial setup
+    let currentYear = new Date().getFullYear();
+    setYear(currentYear);
+
+    // Check every second
+    setInterval(() => {
+      const now = new Date();
+      const newYear = now.getFullYear();
+      if (newYear !== currentYear) {
+        animateYearChange(newYear);
+        currentYear = newYear;
+      }
+    }, 1000);
+
+    // Quick test (use in console): demoFlip(2025)
+    window.demoFlip = function(fakeYear) {
+      animateYearChange(fakeYear);
+      currentYear = fakeYear;
+    };
+  </script>
 </body>
 </html>
