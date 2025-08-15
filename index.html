@@ -1,121 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Happy New Year</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎉 Happy New Year 🎉</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Pacifico&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: linear-gradient(135deg, #001f29, #123c52);
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      overflow: hidden;
-      color: white;
+    /* ---- Base ---- */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,#071a22,#0f2b36,#153c48);
+      color:#fff;
+      overflow:hidden;
+      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
     }
 
-    h1 {
-      font-size: 3.5rem;
-      margin-bottom: 30px;
-      font-family: 'Pacifico', cursive;
-      background: linear-gradient(90deg, #ff4ecb, #9333ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    /* ---- Heading ---- */
+    .feliz{
+      margin:0 16px 24px;
+      text-align:center;
+      font-family:'Pacifico',cursive;
+      font-size:clamp(36px,6vw,72px);
+      line-height:1.05;
+      letter-spacing:0.5px;
+      color:#ffeb3b;                /* gold */
+      text-shadow:0 3px 14px rgba(0,0,0,.35);
+      white-space:nowrap;
     }
 
-    #year {
-      display: flex;
-      font-size: 7rem;
-      font-weight: bold;
-      gap: 10px;
-      background: linear-gradient(90deg, #ff9900, #ffcc00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    /* ---- Stage (where years animate) ---- */
+    .stage{
+      position:relative;
+      width:min(780px,92vw);
+      height:clamp(120px,18vw,200px);
+      overflow:hidden;
+      display:grid;
+      place-items:center;
     }
 
-    .digit {
-      display: inline-block;
-      min-width: 60px;
-      text-align: center;
+    .yearLayer{
+      position:absolute; inset:0;
+      display:grid; place-items:center;
+      font-weight:800;
+      font-size:clamp(72px,18vw,160px);
+      letter-spacing:4px;
+      /* orange -> amber like your screenshot */
+      background:linear-gradient(90deg,#ff8a00,#ffb300);
+      -webkit-background-clip:text;
+      background-clip:text;
+      -webkit-text-fill-color:transparent;
+      text-shadow:0 6px 22px rgba(0,0,0,.35);
+      opacity:0;
+      will-change:transform,opacity;
+    }
+    .yearLayer.visible{opacity:1}
+
+    /* ---- Animations ---- */
+    .slide-out-left{ animation:slideOutLeft .8s ease forwards }
+    .slide-in-right{ animation:slideInRight .8s ease forwards }
+    .pop{ animation:pop .5s ease-in-out forwards }
+
+    @keyframes slideOutLeft{
+      0%{ transform:translateX(0); opacity:1 }
+      100%{ transform:translateX(-260px); opacity:0 }
+    }
+    @keyframes slideInRight{
+      0%{ transform:translateX(260px); opacity:0 }
+      100%{ transform:translateX(0); opacity:1 }
+    }
+    @keyframes pop{
+      0%{ transform:scale(1) }
+      50%{ transform:scale(1.06) }
+      100%{ transform:scale(1) }
     }
 
-    /* Exit animation */
-    .digit-exit {
-      animation: slideOut 0.6s forwards;
-    }
-    @keyframes slideOut {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(-150%); opacity: 0; }
+    /* Footer tag */
+    footer.n{
+      position:absolute;left:0;right:0;bottom:0;
+      text-align:center;padding:14px 10px;
+      background:rgba(0,0,0,.35);
+      font-size:14px
     }
 
-    /* Enter animation */
-    .digit-enter {
-      animation: slideIn 0.6s forwards;
-    }
-    @keyframes slideIn {
-      0% { transform: translateY(150%); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
+    /* Reduced motion safety */
+    @media (prefers-reduced-motion:reduce){
+      .slide-out-left,.slide-in-right,.pop{animation-duration:.001s !important}
     }
   </style>
 </head>
 <body>
-  <h1>🎉 Happy New Year 🎉</h1>
-  <div id="year">
-    <span id="year-1" class="digit"></span>
-    <span id="year-2" class="digit"></span>
-    <span id="year-3" class="digit"></span>
-    <span id="year-4" class="digit"></span>
+  <h1 class="feliz">🎉 Happy New Year 🎉</h1>
+
+  <div class="stage">
+    <div id="layerA" class="yearLayer visible"></div>
+    <div id="layerB" class="yearLayer"></div>
   </div>
 
+  <footer class="n">
+    <h3>Made with ❤️ by Hritik Mondal</h3>
+  </footer>
+
   <script>
-    let currentYear = new Date().getFullYear();
+    // Elements
+    const a = document.getElementById('layerA');
+    const b = document.getElementById('layerB');
 
-    // Initialize year
-    function setYear(year) {
-      const digits = year.toString().split('');
-      document.getElementById("year-1").textContent = digits[0];
-      document.getElementById("year-2").textContent = digits[1];
-      document.getElementById("year-3").textContent = digits[2];
-      document.getElementById("year-4").textContent = digits[3];
+    // State
+    let shownYear = new Date().getFullYear();
+    let current = a;   // currently visible layer
+    let next    = b;   // offscreen layer
+    let animating = false;
+
+    // Helpers
+    const setText = (el, y) => { el.textContent = String(y); };
+
+    // Ensure animation actually fires (force reflow)
+    const raf = (fn) => requestAnimationFrame(() => requestAnimationFrame(fn));
+
+    function finalizeSwap(newYear){
+      // Make 'next' the visible one; reset 'current'
+      current.className = 'yearLayer';
+      next.className = 'yearLayer visible';
+
+      // keep both layers in sync text
+      setText(current, newYear);
+
+      // swap references
+      [current, next] = [next, current];
+      shownYear = newYear;
+      animating = false;
     }
-    setYear(currentYear);
 
-    function updateYear() {
-      const now = new Date();
-      const newYear = now.getFullYear();
+    function animateTo(newYear){
+      if(animating) return;
+      animating = true;
 
-      if (newYear !== currentYear) {
-        const lastDigit = document.getElementById("year-4");
+      // prepare next layer with the new text and make it visible (no animation yet)
+      setText(next, newYear);
+      next.className = 'yearLayer visible';
 
-        // Step 1: animate exit
-        lastDigit.classList.add("digit-exit");
+      // Force a reflow before adding animation classes to guarantee the CSS animations fire
+      raf(() => {
+        current.classList.add('slide-out-left');
+        next.classList.add('slide-in-right');
 
-        lastDigit.addEventListener("animationend", () => {
-          // Step 2: swap digit
-          lastDigit.textContent = newYear.toString()[3];
-          lastDigit.classList.remove("digit-exit");
+        // Clean up when animations finish
+        const onInEnd = (e)=>{
+          if(e.animationName !== 'slideInRight') return;
+          next.classList.remove('slide-in-right');
+          next.classList.add('pop');
+          setTimeout(()=>{ next.classList.remove('pop'); finalizeSwap(newYear); }, 180);
+          next.removeEventListener('animationend', onInEnd);
+        };
+        const onOutEnd = (e)=>{
+          if(e.animationName !== 'slideOutLeft') return;
+          current.classList.remove('slide-out-left');
+          current.removeEventListener('animationend', onOutEnd);
+        };
+        next.addEventListener('animationend', onInEnd);
+        current.addEventListener('animationend', onOutEnd);
+      });
+    }
 
-          // Step 3: animate enter
-          lastDigit.classList.add("digit-enter");
+    // -------- Init --------
+    const realYear = new Date().getFullYear();
+    // Start by showing last year so you *see* the animation right away
+    setText(current, realYear - 1);
+    setText(next, realYear - 1);
 
-          setTimeout(() => {
-            lastDigit.classList.remove("digit-enter");
-          }, 600);
-        }, { once: true });
+    // After a short delay, animate into the real current year
+    setTimeout(()=> animateTo(realYear), 600);
 
-        // Update first 3 digits immediately
-        document.getElementById("year-1").textContent = newYear.toString()[0];
-        document.getElementById("year-2").textContent = newYear.toString()[1];
-        document.getElementById("year-3").textContent = newYear.toString()[2];
-
-        currentYear = newYear;
+    // Also watch for actual midnight changes
+    setInterval(()=>{
+      const y = new Date().getFullYear();
+      if(y !== shownYear && !animating){
+        animateTo(y);
       }
-    }
+    }, 1000);
 
-    setInterval(updateYear, 1000);
+    // Optional tester in DevTools: demoFlip(2026)
+    window.demoFlip = (y)=> animateTo(Number(y)||shownYear+1);
   </script>
 </body>
 </html>
