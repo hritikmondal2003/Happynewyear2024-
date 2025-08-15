@@ -7,7 +7,6 @@
     <title>🎉 Happy New Year 🎉</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Example minimal animations (replace with your style.css animations) */
         .highlight {
             color: gold;
             font-weight: bold;
@@ -29,19 +28,17 @@
     </style>
 </head>
 <body>
-    <!-- Main Heading -->
     <div class="feliz">🎉 Happy New Year 🎉</div>
     
-    <!-- Year Animation -->
     <div class="ano_novo">
         <span id="year-1"></span>
         <span id="year-2"></span>
         <span id="year-3"></span>
-        <span id="year-4" class="highlight"></span>
+        <span id="old-last"></span>
+        <span id="new-last" style="position:absolute; right:0; opacity:0;"></span>
         <div class="balao"></div>
     </div>
     
-    <!-- Fireworks -->
     <div class="fogos">
         <div class="f1"><span><i></i></span><span><i></i></span><span><i></i></span></div>
         <div class="f2"><span><i></i></span><span><i></i></span><span><i></i></span></div>
@@ -49,19 +46,21 @@
         <div class="f4"><span><i></i></span><span><i></i></span><span><i></i></span></div>
     </div>
 
-    <!-- Footer -->
     <footer class="n">
         <h3>Made with ❤️ by Hritik Mondal</h3>
     </footer>
 
-    <!-- JavaScript to Auto Update Year + Animate at Midnight -->
     <script>
-        function setYear(year) {
+        function setYearDigits(year, oldYear = false) {
             const y = year.toString();
             document.getElementById('year-1').textContent = y[0];
             document.getElementById('year-2').textContent = y[1];
             document.getElementById('year-3').textContent = y[2];
-            document.getElementById('year-4').textContent = y[3];
+            if (oldYear) {
+                document.getElementById('old-last').textContent = y[3];
+            } else {
+                document.getElementById('new-last').textContent = y[3];
+            }
         }
 
         function triggerFireworks() {
@@ -71,19 +70,38 @@
             });
         }
 
-        // Set current year on load
-        let currentYear = new Date().getFullYear();
-        setYear(currentYear);
+        function changeYearAnimation(newYear) {
+            const newLast = document.getElementById('new-last');
+            const oldLast = document.getElementById('old-last');
 
-        // Check every second for midnight
-        setInterval(() => {
-            const now = new Date();
-            if (now.getMonth() === 0 && now.getDate() === 1 && now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
-                currentYear++;
-                setYear(currentYear);
+            // Animate old digit up
+            oldLast.style.transition = "transform 1s ease, opacity 1s ease";
+            oldLast.style.transform = "translateY(-100px)";
+            oldLast.style.opacity = "0";
+
+            // Animate new digit in
+            setTimeout(() => {
+                setYearDigits(newYear);
+                newLast.style.opacity = "1";
+                newLast.classList.add('highlight');
                 triggerFireworks();
-                document.getElementById('year-4').classList.add('highlight');
-                setTimeout(() => document.getElementById('year-4').classList.remove('highlight'), 2000);
+                setTimeout(() => newLast.classList.remove('highlight'), 2000);
+            }, 1000);
+        }
+
+        // Initial setup: show old year fully
+        const now = new Date();
+        let currentYear = now.getFullYear();
+        let previousYear = currentYear - 1;
+        setYearDigits(previousYear, true);
+        document.getElementById('new-last').textContent = String(currentYear).slice(-1);
+
+        // Auto trigger at midnight
+        setInterval(() => {
+            const t = new Date();
+            if (t.getFullYear() > currentYear) {
+                currentYear = t.getFullYear();
+                changeYearAnimation(currentYear);
             }
         }, 1000);
     </script>
