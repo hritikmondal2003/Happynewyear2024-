@@ -3,24 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Happy New Year 2025 🎉</title>
-  <style>
-    /* Reset */
-    *{box-sizing:border-box;margin:0;padding:0}
+  <title>🎉 Happy New Year 🎉</title>
 
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Pacifico&display=swap" rel="stylesheet">
+
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      height:100vh;
-      background:linear-gradient(135deg,#3a0ca3,#7209b7,#f72585);
-      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      overflow:hidden;
+      margin:0;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
       color:#fff;
+      overflow:hidden;
+      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
     }
 
-    /* Heading */
     .feliz{
       margin:0 16px 24px;
       text-align:center;
@@ -28,21 +27,18 @@
       font-size:clamp(36px,6vw,72px);
       line-height:1.05;
       letter-spacing:0.5px;
-      color:#4cc9f0;
+      color:#00f0ff;
       text-shadow:0 3px 14px rgba(0,0,0,.35);
       white-space:nowrap;
-      opacity:0;
-      transform:translateY(-40px);
-      animation:fadeSlideIn 3s ease-out forwards;
     }
 
-    /* Year container */
-    .year{
+    .stage{
       position:relative;
+      width:min(780px,92vw);
+      height:clamp(120px,18vw,200px);
+      overflow:hidden;
       display:grid;
       place-items:center;
-      width:100%;
-      height:clamp(120px,30vw,260px);
     }
 
     .yearLayer{
@@ -51,45 +47,120 @@
       font-weight:800;
       font-size:clamp(72px,18vw,160px);
       letter-spacing:4px;
-      background:linear-gradient(90deg,#ffdd00,#ff4ecd);
+      background:linear-gradient(90deg,#00f0ff,#0078ff);
       -webkit-background-clip:text;
       background-clip:text;
       -webkit-text-fill-color:transparent;
       text-shadow:0 6px 22px rgba(0,0,0,.35);
       opacity:0;
-      transform:scale(0.8);
-      animation:popIn 3s ease-out forwards;
-      animation-delay:3s; /* comes after heading finishes */
+      will-change:transform,opacity;
+    }
+    .yearLayer.visible{opacity:1}
+
+    /* ---- Animations (slowed to 3s) ---- */
+    .slide-out-left{ animation:slideOutLeft 3s ease forwards }
+    .slide-in-right{ animation:slideInRight 3s ease forwards }
+    .pop{ animation:pop 3s ease-in-out forwards }
+
+    @keyframes slideOutLeft{
+      0%{ transform:translateX(0); opacity:1 }
+      100%{ transform:translateX(-260px); opacity:0 }
+    }
+    @keyframes slideInRight{
+      0%{ transform:translateX(260px); opacity:0 }
+      100%{ transform:translateX(0); opacity:1 }
+    }
+    @keyframes pop{
+      0%{ transform:scale(1) }
+      50%{ transform:scale(1.06) }
+      100%{ transform:scale(1) }
     }
 
-    /* Footer */
-    footer{
-      position:absolute;
-      bottom:18px;
-      font-size:14px;
-      color:#fff;
-      opacity:0.8;
+    footer.n{
+      position:absolute;left:0;right:0;bottom:0;
+      text-align:center;padding:14px 10px;
+      background:rgba(0,0,0,.35);
+      font-size:14px
     }
 
-    /* Animations */
-    @keyframes fadeSlideIn{
-      from{opacity:0;transform:translateY(-40px);}
-      to{opacity:1;transform:translateY(0);}
-    }
-    @keyframes popIn{
-      0%{opacity:0;transform:scale(0.8);}
-      60%{opacity:1;transform:scale(1.1);}
-      100%{opacity:1;transform:scale(1);}
+    @media (prefers-reduced-motion:reduce){
+      .slide-out-left,.slide-in-right,.pop{animation-duration:.001s !important}
     }
   </style>
 </head>
 <body>
   <h1 class="feliz">🎉 Happy New Year 🎉</h1>
 
-  <div class="year">
-    <div class="yearLayer">2025</div>
+  <div class="stage">
+    <div id="layerA" class="yearLayer visible"></div>
+    <div id="layerB" class="yearLayer"></div>
   </div>
 
-  <footer>✨ Made by Hritik Mondal ✨</footer>
+  <footer class="n">
+    <h3>Made with ❤️ by Hritik Mondal</h3>
+  </footer>
+
+  <script>
+    const a = document.getElementById('layerA');
+    const b = document.getElementById('layerB');
+
+    let shownYear = new Date().getFullYear();
+    let current = a;
+    let next    = b;
+    let animating = false;
+
+    const setText = (el, y) => { el.textContent = String(y); };
+    const raf = (fn) => requestAnimationFrame(() => requestAnimationFrame(fn));
+
+    function finalizeSwap(newYear){
+      current.className = 'yearLayer';
+      next.className = 'yearLayer visible';
+      setText(current, newYear);
+      [current, next] = [next, current];
+      shownYear = newYear;
+      animating = false;
+    }
+
+    function animateTo(newYear){
+      if(animating) return;
+      animating = true;
+      setText(next, newYear);
+      next.className = 'yearLayer visible';
+      raf(() => {
+        current.classList.add('slide-out-left');
+        next.classList.add('slide-in-right');
+
+        const onInEnd = (e)=>{
+          if(e.animationName !== 'slideInRight') return;
+          next.classList.remove('slide-in-right');
+          next.classList.add('pop');
+          setTimeout(()=>{ next.classList.remove('pop'); finalizeSwap(newYear); }, 180);
+          next.removeEventListener('animationend', onInEnd);
+        };
+        const onOutEnd = (e)=>{
+          if(e.animationName !== 'slideOutLeft') return;
+          current.classList.remove('slide-out-left');
+          current.removeEventListener('animationend', onOutEnd);
+        };
+        next.addEventListener('animationend', onInEnd);
+        current.addEventListener('animationend', onOutEnd);
+      });
+    }
+
+    const realYear = new Date().getFullYear();
+    setText(current, realYear - 1);
+    setText(next, realYear - 1);
+
+    setTimeout(()=> animateTo(realYear), 600);
+
+    setInterval(()=>{
+      const y = new Date().getFullYear();
+      if(y !== shownYear && !animating){
+        animateTo(y);
+      }
+    }, 1000);
+
+    window.demoFlip = (y)=> animateTo(Number(y)||shownYear+1);
+  </script>
 </body>
 </html>
