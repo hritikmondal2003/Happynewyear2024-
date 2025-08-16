@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎉 Happy New Year 🎉</title>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="src/assets/boy.svg"/>
-
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Pacifico&display=swap" rel="stylesheet">
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="src/assets/boy.svg"/>
 
   <style>
     *,*::before,*::after{box-sizing:border-box}
@@ -17,11 +16,13 @@
     body{
       margin:0;
       display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,#071a22,#0f2b36,#153c48);
       color:#fff;
       overflow:hidden;
       font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
     }
 
+    /* Heading */
     .feliz{
       margin:0 16px 24px;
       text-align:center;
@@ -29,11 +30,12 @@
       font-size:clamp(36px,6vw,72px);
       line-height:1.05;
       letter-spacing:0.5px;
-      color:#00f0ff;
+      color:#00e5ff;
       text-shadow:0 3px 14px rgba(0,0,0,.35);
       white-space:nowrap;
     }
 
+    /* Stage */
     .stage{
       position:relative;
       width:min(780px,92vw);
@@ -49,19 +51,25 @@
       font-weight:800;
       font-size:clamp(72px,18vw,160px);
       letter-spacing:4px;
+
+      /* Gradient text fix */
+      background:linear-gradient(90deg,#ff8a00,#ffb300);
+      background-size:200% auto;
       -webkit-background-clip:text;
       background-clip:text;
+      color:transparent;
       -webkit-text-fill-color:transparent;
+
       text-shadow:0 6px 22px rgba(0,0,0,.35);
       opacity:0;
       will-change:transform,opacity;
     }
     .yearLayer.visible{opacity:1}
 
-    /* Slow animations (3s) */
+    /* Animations */
     .slide-out-left{ animation:slideOutLeft 3s ease forwards }
     .slide-in-right{ animation:slideInRight 3s ease forwards }
-    .pop{ animation:pop 3s ease-in-out forwards }
+    .pop{ animation:pop 0.5s ease-in-out forwards }
 
     @keyframes slideOutLeft{
       0%{ transform:translateX(0); opacity:1 }
@@ -102,36 +110,42 @@
   </footer>
 
   <script>
-    // 🎨 Gradient sets (background, year text)
-    const gradients = [
-      { bg: ['#0f2027', '#203a43', '#2c5364'], text: ['#00f0ff', '#0078ff'] },
-      { bg: ['#1a2a6c', '#b21f1f', '#fdbb2d'], text: ['#ff512f', '#dd2476'] },
-      { bg: ['#42275a', '#734b6d'], text: ['#f7971e', '#ffd200'] },
-      { bg: ['#134e5e', '#71b280'], text: ['#ff5f6d', '#ffc371'] },
-      { bg: ['#000428', '#004e92'], text: ['#76b852', '#8DC26F'] }
-    ];
+    // Random gradient colors every load
+    function getRandomGradient() {
+      const colors = [
+        ['#ff512f', '#dd2476'],
+        ['#24c6dc', '#514a9d'],
+        ['#ff8a00', '#e52e71'],
+        ['#00c6ff', '#0072ff'],
+        ['#f7971e', '#ffd200'],
+        ['#8e2de2', '#4a00e0'],
+        ['#ff5f6d', '#ffc371'],
+        ['#36d1dc', '#5b86e5']
+      ];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
 
-    // Pick random gradient
-    const picked = gradients[Math.floor(Math.random() * gradients.length)];
-
-    // Apply background gradient
-    document.body.style.background = `linear-gradient(135deg, ${picked.bg.join(', ')})`;
-
-    // Apply text gradient to year layers
-    document.querySelectorAll('.yearLayer').forEach(el => {
-      el.style.background = `linear-gradient(90deg, ${picked.text.join(', ')})`;
-    });
+    function applyRandomGradient(el) {
+      const [c1, c2] = getRandomGradient();
+      el.style.background = `linear-gradient(90deg, ${c1}, ${c2})`;
+      el.style.backgroundSize = '200% auto';
+    }
 
     // Elements
     const a = document.getElementById('layerA');
     const b = document.getElementById('layerB');
 
+    // State
     let shownYear = new Date().getFullYear();
     let current = a;
-    let next    = b;
+    let next = b;
     let animating = false;
 
-    const setText = (el, y) => { el.textContent = String(y); };
+    const setText = (el, y) => {
+      el.textContent = String(y);
+      applyRandomGradient(el);
+    };
+
     const raf = (fn) => requestAnimationFrame(() => requestAnimationFrame(fn));
 
     function finalizeSwap(newYear){
@@ -146,8 +160,10 @@
     function animateTo(newYear){
       if(animating) return;
       animating = true;
+
       setText(next, newYear);
       next.className = 'yearLayer visible';
+
       raf(() => {
         current.classList.add('slide-out-left');
         next.classList.add('slide-in-right');
@@ -169,6 +185,7 @@
       });
     }
 
+    // Init
     const realYear = new Date().getFullYear();
     setText(current, realYear - 1);
     setText(next, realYear - 1);
