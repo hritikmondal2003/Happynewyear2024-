@@ -1,102 +1,86 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎉 Happy New Year 🎉</title>
-
-  <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="dancing.svg"/>
-
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Pacifico&display=swap" rel="stylesheet">
 
   <style>
-    *,*::before,*::after{box-sizing:border-box}
-    html,body{height:100%}
-    body{
+    body {
       margin:0;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      display:flex;flex-direction:column;align-items:center;
       background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
       color:#fff;
-      overflow:hidden;
-      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      font-family:'Montserrat',sans-serif;
+      padding:20px 10px 80px;
     }
-
-    .feliz{
+    .feliz {
       margin:0 16px 24px;
       text-align:center;
       font-family:'Pacifico',cursive;
       font-size:clamp(36px,6vw,72px);
-      line-height:1.05;
-      letter-spacing:0.5px;
       color:#00f0ff;
       text-shadow:0 3px 14px rgba(0,0,0,.35);
-      white-space:nowrap;
     }
-
-    .stage{
-      position:relative;
-      width:min(780px,92vw);
-      height:clamp(120px,18vw,200px);
-      overflow:hidden;
-      display:grid;
-      place-items:center;
-    }
-
-    .yearLayer{
-      position:absolute; inset:0;
-      display:grid; place-items:center;
-      font-weight:800;
-      font-size:clamp(72px,18vw,160px);
-      letter-spacing:4px;
-      background:linear-gradient(90deg,#00f0ff,#0078ff);
-      -webkit-background-clip:text;
-      background-clip:text;
-      -webkit-text-fill-color:transparent;
-      text-shadow:0 6px 22px rgba(0,0,0,.35);
-      opacity:0;
-      will-change:transform,opacity;
-    }
+    .stage { position:relative;width:min(780px,92vw);height:clamp(120px,18vw,200px);display:grid;place-items:center; }
+    .yearLayer { position:absolute;inset:0;display:grid;place-items:center;font-weight:800;
+      font-size:clamp(72px,18vw,160px);background:linear-gradient(90deg,#00f0ff,#0078ff);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 6px 22px rgba(0,0,0,.35);opacity:0;}
     .yearLayer.visible{opacity:1}
 
-    /* Slow animations (3s) */
-    .slide-out-left{ animation:slideOutLeft 3s ease forwards }
-    .slide-in-right{ animation:slideInRight 3s ease forwards }
-    .pop{ animation:pop 3s ease-in-out forwards }
+    /* Calendar */
+    .calendar-container {margin-top:40px;text-align:center;}
+    .calendar {width:350px;background:white;color:#000;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.15);overflow:hidden;margin:auto;}
+    .calendar header {display:flex;justify-content:space-between;align-items:center;background:#4f46e5;color:white;padding:15px;}
+    .calendar header h2 {margin:0;font-size:18px;}
+    .calendar header button {background:white;color:#4f46e5;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:bold;}
+    .calendar header button:hover {background:#e0e7ff;}
+    .days {display:grid;grid-template-columns:repeat(7,1fr);background:#eef2ff;padding:10px 0;font-weight:bold;}
+    .days div {text-align:center;color:#4f46e5;}
+    .dates {display:grid;grid-template-columns:repeat(7,1fr);padding:15px;gap:5px;}
+    .dates div {text-align:center;padding:8px 0;border-radius:6px;cursor:pointer;}
+    .dates div:hover {background:#e0e7ff;}
+    .today {background:#4f46e5;color:white;font-weight:bold;}
+    .empty {cursor:default;}
 
-    @keyframes slideOutLeft{
-      0%{ transform:translateX(0); opacity:1 }
-      100%{ transform:translateX(-260px); opacity:0 }
-    }
-    @keyframes slideInRight{
-      0%{ transform:translateX(260px); opacity:0 }
-      100%{ transform:translateX(0); opacity:1 }
-    }
-    @keyframes pop{
-      0%{ transform:scale(1) }
-      50%{ transform:scale(1.06) }
-      100%{ transform:scale(1) }
-    }
-
-    footer.n{
-      position:absolute;left:0;right:0;bottom:0;
-      text-align:center;padding:14px 10px;
-      background:rgba(0,0,0,.35);
-      font-size:14px
-    }
-
-    @media (prefers-reduced-motion:reduce){
-      .slide-out-left,.slide-in-right,.pop{animation-duration:.001s !important}
-    }
+    .countdown {margin-top:30px;font-size:20px;text-align:center;color:#fff;}
+    footer.n {position:absolute;left:0;right:0;bottom:0;text-align:center;padding:14px 10px;background:rgba(0,0,0,.35);font-size:14px;}
   </style>
+
 </head>
 <body>
   <h1 class="feliz">🎉 Happy New Year 🎉</h1>
 
+  <!-- Animated Year -->
+
   <div class="stage">
     <div id="layerA" class="yearLayer visible"></div>
     <div id="layerB" class="yearLayer"></div>
+  </div>
+
+  <!-- Calendar -->
+
+  <div class="calendar-container">
+    <div class="calendar">
+      <header>
+        <button id="prev">&#8592;</button>
+        <h2 id="month-year"></h2>
+        <button id="next">&#8594;</button>
+      </header>
+      <div class="days">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div class="dates" id="dates"></div>
+    </div>
+  </div>
+
+  <!-- Countdown -->
+
+  <div class="countdown">
+    ⏳ Time left for New Year: <span id="timer"></span>
   </div>
 
   <footer class="n">
@@ -104,67 +88,49 @@
   </footer>
 
   <script>
-    const a = document.getElementById('layerA');
-    const b = document.getElementById('layerB');
+    // Year Animation
+    const a=document.getElementById('layerA'), b=document.getElementById('layerB');
+    let shownYear=new Date().getFullYear(), current=a, next=b, animating=false;
+    const setText=(el,y)=>{el.textContent=String(y);};
+    const raf=(fn)=>requestAnimationFrame(()=>requestAnimationFrame(fn));
+    function finalizeSwap(newYear){current.className='yearLayer';next.className='yearLayer visible';setText(current,newYear);[current,next]=[next,current];shownYear=newYear;animating=false;}
+    function animateTo(newYear){if(animating)return;animating=true;setText(next,newYear);next.className='yearLayer visible';raf(()=>{current.classList.add('slide-out-left');next.classList.add('slide-in-right');setTimeout(()=>{finalizeSwap(newYear);},600);});}
+    const realYear=new Date().getFullYear();setText(current,realYear-1);setText(next,realYear-1);setTimeout(()=>animateTo(realYear),600);
 
-    let shownYear = new Date().getFullYear();
-    let current = a;
-    let next    = b;
-    let animating = false;
-
-    const setText = (el, y) => { el.textContent = String(y); };
-    const raf = (fn) => requestAnimationFrame(() => requestAnimationFrame(fn));
-
-    function finalizeSwap(newYear){
-      current.className = 'yearLayer';
-      next.className = 'yearLayer visible';
-      setText(current, newYear);
-      [current, next] = [next, current];
-      shownYear = newYear;
-      animating = false;
+    // Countdown
+    function updateCountdown(){
+      const now=new Date(), nextYear=new Date(now.getFullYear()+1,0,1);
+      const diff=nextYear-now;
+      const d=Math.floor(diff/(1000*60*60*24));
+      const h=Math.floor((diff/(1000*60*60))%24);
+      const m=Math.floor((diff/(1000*60))%60);
+      const s=Math.floor((diff/1000)%60);
+      document.getElementById("timer").textContent=`${d}d ${h}h ${m}m ${s}s`;
     }
+    updateCountdown();setInterval(updateCountdown,1000);
 
-    function animateTo(newYear){
-      if(animating) return;
-      animating = true;
-      setText(next, newYear);
-      next.className = 'yearLayer visible';
-      raf(() => {
-        current.classList.add('slide-out-left');
-        next.classList.add('slide-in-right');
-
-        const onInEnd = (e)=>{
-          if(e.animationName !== 'slideInRight') return;
-          next.classList.remove('slide-in-right');
-          next.classList.add('pop');
-          setTimeout(()=>{ next.classList.remove('pop'); finalizeSwap(newYear); }, 180);
-          next.removeEventListener('animationend', onInEnd);
-        };
-        const onOutEnd = (e)=>{
-          if(e.animationName !== 'slideOutLeft') return;
-          current.classList.remove('slide-out-left');
-          current.removeEventListener('animationend', onOutEnd);
-        };
-        next.addEventListener('animationend', onInEnd);
-        current.addEventListener('animationend', onOutEnd);
-      });
-    }
-
-    const realYear = new Date().getFullYear();
-    setText(current, realYear - 1);
-    setText(next, realYear - 1);
-
-    setTimeout(()=> animateTo(realYear), 600);
-
-    setInterval(()=>{
-      const y = new Date().getFullYear();
-      if(y !== shownYear && !animating){
-        animateTo(y);
+    // Calendar
+    const monthYear=document.getElementById("month-year"), dates=document.getElementById("dates");
+    const prevBtn=document.getElementById("prev"), nextBtn=document.getElementById("next");
+    let currentDate=new Date();
+    function renderCalendar(){
+      const year=currentDate.getFullYear(), month=currentDate.getMonth();
+      const firstDay=new Date(year,month,1).getDay();
+      const lastDate=new Date(year,month+1,0).getDate();
+      monthYear.textContent=currentDate.toLocaleString("default",{month:"long",year:"numeric"});
+      dates.innerHTML="";
+      for(let i=0;i<firstDay;i++){const empty=document.createElement("div");empty.classList.add("empty");dates.appendChild(empty);}
+      for(let d=1;d<=lastDate;d++){
+        const day=document.createElement("div");day.textContent=d;
+        const today=new Date();
+        if(d===today.getDate()&&month===today.getMonth()&&year===today.getFullYear()){day.classList.add("today");}
+        dates.appendChild(day);
       }
-    }, 1000);
-
-    window.demoFlip = (y)=> animateTo(Number(y)||shownYear+1);
+    }
+    prevBtn.addEventListener("click",()=>{currentDate.setMonth(currentDate.getMonth()-1);renderCalendar();});
+    nextBtn.addEventListener("click",()=>{currentDate.setMonth(currentDate.getMonth()+1);renderCalendar();});
+    renderCalendar();
   </script>
+
 </body>
 </html>
-
