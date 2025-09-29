@@ -17,6 +17,7 @@
       color:#fff;
       font-family:'Montserrat',sans-serif;
       padding:20px 10px 80px;
+      min-height:100vh;
     }
     .feliz {
       margin:0 16px 24px;
@@ -83,7 +84,33 @@
     .empty {cursor:default;}
 
     .countdown {margin-top:30px;font-size:20px;text-align:center;color:#fff;}
-    footer.n {position:absolute;left:0;right:0;bottom:0;text-align:center;padding:14px 10px;background:rgba(0,0,0,.35);font-size:14px;}
+
+    /* Footer fixed at bottom */
+    footer.n {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      text-align: center;
+      padding: 14px 10px;
+      background: rgba(0,0,0,.35);
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    footer.n h3, footer.n p {margin:0;}
+    .github-link {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      color:white;
+      text-decoration:none;
+      font-weight:bold;
+    }
+    .github-link img {width:18px;height:18px;}
+    .github-link:hover {text-decoration:underline;}
   </style>
 </head>
 <body>
@@ -118,6 +145,10 @@
 
   <footer class="n">
     <h3>Made with ❤️ by Hritik Mondal</h3>
+    <p>&copy; 2025 Hritik Mondal. All rights reserved.</p>
+    <a href="https://github.com/hritikmondal2003/Happynewyear" target="_blank" class="github-link">
+      <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo"/> View Source on GitHub
+    </a>
   </footer>
 
   <script>
@@ -126,7 +157,6 @@
     let current=a, next=b, animating=false;
     const setText=(el,y)=>{el.textContent=String(y);};
 
-    const raf=(fn)=>requestAnimationFrame(()=>requestAnimationFrame(fn));
     function animateTo(newYear){
       if(animating) return;
       animating = true;
