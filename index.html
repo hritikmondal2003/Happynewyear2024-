@@ -13,26 +13,30 @@
       display:flex;
       flex-direction:column;
       align-items:center;
-      background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+      background: linear-gradient(135deg, #ff5f6d, #ffc371, #47d1f9);
       color:#fff;
       font-family:'Montserrat',sans-serif;
-      padding:20px 10px 80px;
+      padding:20px 10px 100px;
       min-height:100vh;
+      box-sizing:border-box;
     }
+
     .feliz {
       margin:0 16px 24px;
       text-align:center;
       font-family:'Pacifico',cursive;
-      font-size:clamp(36px,6vw,72px);
-      color:#00f0ff;
-      text-shadow:0 3px 14px rgba(0,0,0,.35);
+      font-size:clamp(32px,6vw,72px);
+      background: linear-gradient(90deg, #ff6ec4, #7873f5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow:0 4px 18px rgba(0,0,0,.35);
     }
 
     /* Animated Year */
     .stage { 
       position:relative;
       width:min(780px,92vw);
-      height:clamp(120px,18vw,200px);
+      height:clamp(100px,18vw,200px);
       display:grid;
       place-items:center; 
       overflow:hidden;
@@ -43,8 +47,8 @@
       display:grid;
       place-items:center;
       font-weight:800;
-      font-size:clamp(72px,18vw,160px);
-      background:linear-gradient(90deg,#00f0ff,#0078ff);
+      font-size:clamp(60px,15vw,160px);
+      background: linear-gradient(90deg, #ff6a00, #ee0979, #7f00ff);
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
       text-shadow:0 6px 22px rgba(0,0,0,.35);
@@ -52,38 +56,53 @@
       transform: translateX(0);
     }
     .yearLayer.visible { opacity:1; }
-
-    .slide-in-right {
-      animation: slideIn 0.6s forwards;
-    }
-    .slide-out-left {
-      animation: slideOut 0.6s forwards;
-    }
-    @keyframes slideIn {
-      0% { transform: translateX(100%); opacity:0; }
-      100% { transform: translateX(0); opacity:1; }
-    }
-    @keyframes slideOut {
-      0% { transform: translateX(0); opacity:1; }
-      100% { transform: translateX(-100%); opacity:0; }
-    }
+    .slide-in-right { animation: slideIn 0.6s forwards; }
+    .slide-out-left { animation: slideOut 0.6s forwards; }
+    @keyframes slideIn { 0% { transform: translateX(100%); opacity:0; } 100% { transform: translateX(0); opacity:1; } }
+    @keyframes slideOut { 0% { transform: translateX(0); opacity:1; } 100% { transform: translateX(-100%); opacity:0; } }
 
     /* Calendar */
-    .calendar-container {margin-top:40px;text-align:center;}
-    .calendar {width:350px;background:white;color:#000;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.15);overflow:hidden;margin:auto;}
-    .calendar header {display:flex;justify-content:space-between;align-items:center;background:#4f46e5;color:white;padding:15px;}
-    .calendar header h2 {margin:0;font-size:18px;}
-    .calendar header button {background:white;color:#4f46e5;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:bold;}
-    .calendar header button:hover {background:#e0e7ff;}
-    .days {display:grid;grid-template-columns:repeat(7,1fr);background:#eef2ff;padding:10px 0;font-weight:bold;}
-    .days div {text-align:center;color:#4f46e5;}
-    .dates {display:grid;grid-template-columns:repeat(7,1fr);padding:15px;gap:5px;}
-    .dates div {text-align:center;padding:8px 0;border-radius:6px;cursor:pointer;}
-    .dates div:hover {background:#e0e7ff;}
-    .today {background:#4f46e5;color:white;font-weight:bold;}
+    .calendar-container {margin-top:40px;text-align:center;width:100%;max-width:400px;}
+    .calendar {
+      width:100%;
+      background:white;
+      color:#000;
+      border-radius:12px;
+      box-shadow:0 6px 20px rgba(0,0,0,0.2);
+      overflow:hidden;
+      margin:auto;
+    }
+    .calendar header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background: linear-gradient(135deg, #ff512f, #dd2476);
+      color:white;
+      padding:12px;
+    }
+    .calendar header h2 {margin:0;font-size:16px;}
+    .calendar header button {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color:white;
+      border:none;
+      padding:5px 10px;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:bold;
+      font-size:14px;
+      transition: transform 0.2s;
+    }
+    .calendar header button:hover { transform: scale(1.1); }
+
+    .days {display:grid;grid-template-columns:repeat(7,1fr);background:#f0f4ff;padding:8px 0;font-weight:bold;}
+    .days div {text-align:center;color:#4f46e5;font-size:12px;}
+    .dates {display:grid;grid-template-columns:repeat(7,1fr);padding:10px;gap:4px;}
+    .dates div {text-align:center;padding:6px 0;border-radius:6px;cursor:pointer;font-size:14px; transition: 0.2s;}
+    .dates div:hover {background: linear-gradient(135deg,#ffafbd,#ffc3a0);}
+    .today {background: linear-gradient(135deg,#12c2e9,#c471ed,#f64f59);color:white;font-weight:bold;}
     .empty {cursor:default;}
 
-    .countdown {margin-top:30px;font-size:20px;text-align:center;color:#fff;}
+    .countdown {margin-top:30px;font-size:clamp(16px,4vw,20px);text-align:center;color:#fff;word-wrap:break-word;}
 
     /* Footer fixed at bottom */
     footer.n {
@@ -92,13 +111,14 @@
       right: 0;
       bottom: 0;
       text-align: center;
-      padding: 14px 10px;
+      padding: 10px 10px;
       background: rgba(0,0,0,.35);
       font-size: 14px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
+      box-sizing: border-box;
     }
     footer.n h3, footer.n p {margin:0;}
     .github-link {
@@ -108,9 +128,22 @@
       color:white;
       text-decoration:none;
       font-weight:bold;
+      font-size:14px;
     }
     .github-link img {width:18px;height:18px;}
     .github-link:hover {text-decoration:underline;}
+
+    /* Responsive tweaks */
+    @media (max-width:600px) {
+      .calendar {font-size:12px;}
+      .yearLayer {font-size:clamp(50px,18vw,120px);}
+      .countdown {font-size:16px;}
+    }
+    @media (min-width:601px) and (max-width:1024px) {
+      .calendar {max-width:360px;}
+      .yearLayer {font-size:clamp(60px,15vw,140px);}
+      .countdown {font-size:18px;}
+    }
   </style>
 </head>
 <body>
@@ -160,11 +193,9 @@
     function animateTo(newYear){
       if(animating) return;
       animating = true;
-
       setText(next,newYear);
       next.className='yearLayer visible slide-in-right';
       current.className='yearLayer slide-out-left';
-
       setTimeout(()=>{
         current.className='yearLayer';
         next.className='yearLayer visible';
