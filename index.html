@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -11,7 +10,9 @@
   <style>
     body {
       margin:0;
-      display:flex;flex-direction:column;align-items:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
       background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
       color:#fff;
       font-family:'Montserrat',sans-serif;
@@ -25,11 +26,46 @@
       color:#00f0ff;
       text-shadow:0 3px 14px rgba(0,0,0,.35);
     }
-    .stage { position:relative;width:min(780px,92vw);height:clamp(120px,18vw,200px);display:grid;place-items:center; }
-    .yearLayer { position:absolute;inset:0;display:grid;place-items:center;font-weight:800;
-      font-size:clamp(72px,18vw,160px);background:linear-gradient(90deg,#00f0ff,#0078ff);
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 6px 22px rgba(0,0,0,.35);opacity:0;}
-    .yearLayer.visible{opacity:1}
+
+    /* Animated Year */
+    .stage { 
+      position:relative;
+      width:min(780px,92vw);
+      height:clamp(120px,18vw,200px);
+      display:grid;
+      place-items:center; 
+      overflow:hidden;
+    }
+    .yearLayer {
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      font-size:clamp(72px,18vw,160px);
+      background:linear-gradient(90deg,#00f0ff,#0078ff);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      text-shadow:0 6px 22px rgba(0,0,0,.35);
+      opacity:0;
+      transform: translateX(0);
+    }
+    .yearLayer.visible { opacity:1; }
+
+    .slide-in-right {
+      animation: slideIn 0.6s forwards;
+    }
+    .slide-out-left {
+      animation: slideOut 0.6s forwards;
+    }
+    @keyframes slideIn {
+      0% { transform: translateX(100%); opacity:0; }
+      100% { transform: translateX(0); opacity:1; }
+    }
+    @keyframes slideOut {
+      0% { transform: translateX(0); opacity:1; }
+      100% { transform: translateX(-100%); opacity:0; }
+    }
 
     /* Calendar */
     .calendar-container {margin-top:40px;text-align:center;}
@@ -49,20 +85,18 @@
     .countdown {margin-top:30px;font-size:20px;text-align:center;color:#fff;}
     footer.n {position:absolute;left:0;right:0;bottom:0;text-align:center;padding:14px 10px;background:rgba(0,0,0,.35);font-size:14px;}
   </style>
-
 </head>
 <body>
+
   <h1 class="feliz">🎉 Happy New Year 🎉</h1>
 
   <!-- Animated Year -->
-
   <div class="stage">
     <div id="layerA" class="yearLayer visible"></div>
     <div id="layerB" class="yearLayer"></div>
   </div>
 
   <!-- Calendar -->
-
   <div class="calendar-container">
     <div class="calendar">
       <header>
@@ -78,7 +112,6 @@
   </div>
 
   <!-- Countdown -->
-
   <div class="countdown">
     ⏳ Time left for New Year: <span id="timer"></span>
   </div>
@@ -90,12 +123,30 @@
   <script>
     // Year Animation
     const a=document.getElementById('layerA'), b=document.getElementById('layerB');
-    let shownYear=new Date().getFullYear(), current=a, next=b, animating=false;
+    let current=a, next=b, animating=false;
     const setText=(el,y)=>{el.textContent=String(y);};
+
     const raf=(fn)=>requestAnimationFrame(()=>requestAnimationFrame(fn));
-    function finalizeSwap(newYear){current.className='yearLayer';next.className='yearLayer visible';setText(current,newYear);[current,next]=[next,current];shownYear=newYear;animating=false;}
-    function animateTo(newYear){if(animating)return;animating=true;setText(next,newYear);next.className='yearLayer visible';raf(()=>{current.classList.add('slide-out-left');next.classList.add('slide-in-right');setTimeout(()=>{finalizeSwap(newYear);},600);});}
-    const realYear=new Date().getFullYear();setText(current,realYear-1);setText(next,realYear-1);setTimeout(()=>animateTo(realYear),600);
+    function animateTo(newYear){
+      if(animating) return;
+      animating = true;
+
+      setText(next,newYear);
+      next.className='yearLayer visible slide-in-right';
+      current.className='yearLayer slide-out-left';
+
+      setTimeout(()=>{
+        current.className='yearLayer';
+        next.className='yearLayer visible';
+        [current,next]=[next,current];
+        animating=false;
+      },600);
+    }
+
+    const realYear=new Date().getFullYear();
+    setText(current,realYear-1);
+    setText(next,realYear-1);
+    setTimeout(()=>animateTo(realYear),600);
 
     // Countdown
     function updateCountdown(){
@@ -107,7 +158,7 @@
       const s=Math.floor((diff/1000)%60);
       document.getElementById("timer").textContent=`${d}d ${h}h ${m}m ${s}s`;
     }
-    updateCountdown();setInterval(updateCountdown,1000);
+    updateCountdown(); setInterval(updateCountdown,1000);
 
     // Calendar
     const monthYear=document.getElementById("month-year"), dates=document.getElementById("dates");
